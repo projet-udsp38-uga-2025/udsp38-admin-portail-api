@@ -41,7 +41,8 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "mkdir -p /app"
           scp -o StrictHostKeyChecking=no ./docker-compose.yml $VM_USER@$VM_HOST:/app/
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "docker-compose up -d"
