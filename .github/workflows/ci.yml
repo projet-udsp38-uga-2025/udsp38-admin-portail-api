@@ -34,7 +34,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t udsp-38-app:latest .
 
-      - name: Deploy to Ubuntu VM
+      - name: Deploy to Ubuntu VM.
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           VM_HOST: ${{ secrets.VM_HOST }}
