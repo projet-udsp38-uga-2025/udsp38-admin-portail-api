@@ -44,17 +44,13 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "mkdir -p /app"
-          scp -o StrictHostKeyChecking=no ./docker-compose.yml $VM_USER@$VM_HOST:/app/
+          scp -o StrictHostKeyChecking=no -r ./docker-compose.yml $VM_USER@$VM_HOST:/app/
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
-            if [ ! -f /app/docker-compose.yml ]; then
-              echo 'docker-compose.yml not found in /app/';
-              exit 1;
-            fi
             if ! command -v docker-compose &> /dev/null; then
               sudo curl -L 'https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)' -o /usr/local/bin/docker-compose &&
               sudo chmod +x /usr/local/bin/docker-compose;
             fi
-            docker-compose --version &&
             cd /app &&
+            docker build -t udsp-38-app:latest . &&
             docker-compose up -d
           "
