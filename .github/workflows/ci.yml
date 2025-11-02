@@ -43,7 +43,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "mkdir -p /app"
+          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "sudo mkdir -p /app && sudo chown -R $VM_USER:$VM_USER /app"
           scp -o StrictHostKeyChecking=no -r . $VM_USER@$VM_HOST:/app/
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
             if ! command -v docker-compose &> /dev/null; then
