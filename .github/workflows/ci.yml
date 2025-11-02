@@ -44,7 +44,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "mkdir -p /app"
-          scp -o StrictHostKeyChecking=no -r ./docker-compose.yml $VM_USER@$VM_HOST:/app/
+          scp -o StrictHostKeyChecking=no -r . $VM_USER@$VM_HOST:/app/
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
             if ! command -v docker-compose &> /dev/null; then
               sudo curl -L 'https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)' -o /usr/local/bin/docker-compose &&
