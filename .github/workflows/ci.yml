@@ -53,6 +53,6 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
-            docker pull your-dockerhub-username/udsp-38-app:latest &&
+            docker pull projetudsp38/udsp-38-app:latest &&
             docker-compose up -d
           "
