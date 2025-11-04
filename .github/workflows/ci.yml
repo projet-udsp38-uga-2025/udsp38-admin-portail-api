@@ -53,7 +53,6 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           scp -o StrictHostKeyChecking=no docker-compose.yml $VM_USER@$VM_HOST:/home/$VM_USER/docker-compose.yml
-          scp -o StrictHostKeyChecking=no nginx.conf $VM_USER@$VM_HOST:/home/$VM_USER/nginx.conf
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
             docker pull projetudsp38/udsp-38-app:latest &&
             docker-compose -f /home/$VM_USER/docker-compose.yml down &&
