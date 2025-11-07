@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: projetudsp38/udsp-38-app:latest
+    image: projetudsp38/udsp-38-app:${DOCKER_TAG:-latest}
     container_name: udsp-38-app
     ports:
       - "3000:3000"
