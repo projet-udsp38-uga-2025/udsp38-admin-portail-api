@@ -28,11 +28,20 @@ jobs:
             echo "DOCKER_TAG=test" >> $GITHUB_ENV
           fi
 
+      - name: Set environment variables
+        id: set-env
+        run: |
+          if [[ ${{ github.ref }} == *"main"* ]]; then
+            echo "PORT=3000" >> $GITHUB_ENV
+          else
+            echo "PORT=3001" >> $GITHUB_ENV
+          fi
+
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Lint
         run: pnpm run lint
@@ -64,7 +73,10 @@ jobs:
           scp -o StrictHostKeyChecking=no docker-compose.yml $VM_USER@$VM_HOST:/home/$VM_USER/docker-compose.yml
           ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "
             export DOCKER_TAG=${DOCKER_TAG} &&
-            docker rmi projetudsp38/udsp-38-app:${DOCKER_TAG} &&
+            export PORT=${PORT} &&
+            if docker image inspect projetudsp38/udsp-38-app:${DOCKER_TAG} >/dev/null 2>&1; then
+              docker rmi projetudsp38/udsp-38-app:${DOCKER_TAG}
+            fi &&
             docker pull projetudsp38/udsp-38-app:${DOCKER_TAG} &&
             docker-compose -f /home/$VM_USER/docker-compose.yml down &&
             docker-compose -f /home/$VM_USER/docker-compose.yml up -d
