@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API du Portail Admin UDSP38
 
-## Getting Started
+Ceci est l'API backend pour le Portail Admin UDSP38, construite avec Next.js 15, TypeScript et Prisma ORM.
 
-First, run the development server:
+## 🚀 Pour Commencer
 
+### Prérequis
+- Node.js 18+
+- npm
+- Base de données PostgreSQL en local
+
+### Installation
+
+2. Installer les dépendances :
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd udsp38-admin-portail-api
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Configurer les variables d'environnement :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Si vous n'avez pas le fichier .env dans votre dossier du projet,
+- Créez le fichier .env
+- Récuperez le contenu sur le dossier drive partagé du projet
+- Modifiez `.env` avec vos identifiants de base de données.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Configuration de Prisma
 
-## Learn More
+📄📚Lien docs : https://www.prisma.io/docs/
 
-To learn more about Next.js, take a look at the following resources:
+1. Générer le client Prisma :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+C'est l'ORM (Object-Relational Mapper) pour interagir avec ta base de données de manière type-safe. A chaque fois que le fichier `schema.prisma` est modifié, il faut lancer cette commande ci-dessous. Mais elle ne fait que mettre à jour le mapping de l'ORM sans appliquer les modifications à la base de données. Pour appliquer les modifications dans la base de données il faut lancer la commande abordée au point suivant.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx prisma generate
+```
 
-## Deploy on Vercel
+2. Exécuter les migrations de la base de données :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Lancez cette commande toutes fois que vous apportez une modification au fichier `schema.prisma`. Cela va créer la migration pour appliquer les modifications à la base de données et Regénerer le client Prisma (essentiel pour le mapping objet dans le code).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx prisma migrate dev
+```
+
+### Lancement de l'Application
+
+Mode développement :
+```bash
+npm run dev
+```
+L'API sera disponible sur `http://localhost:3000`
+
+Build de production :
+```bash
+npm build
+npm start
+```
+
+## 🔄 Commandes Prisma
+
+- Mettre à jour le schéma et générer le client :
+```bash
+npx prisma generate
+```
+
+- Créer une nouvelle migration :
+```bash
+npx prisma migrate dev
+```
+
+## 📝 Documentation de l'API
+
+La documentation de l'API est disponible sur :
+- Développement : `http://localhost:3000/api-docs`
+- Production : `https://your-domain.com/api-docs`
+
+## 🛠️ Stack Technique
+
+- Next.js 15 (App Router)
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Tailwind CSS
+- React 19
