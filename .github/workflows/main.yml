@@ -1,0 +1,15 @@
+name: Production CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy-production:
+    uses: ./.github/workflows/common.yml
+    with:
+      docker_tag: 'latest'
+      port: '3000'
+    secrets: inherit
