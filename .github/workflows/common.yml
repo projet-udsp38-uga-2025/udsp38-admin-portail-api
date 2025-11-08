@@ -69,12 +69,12 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           scp -o StrictHostKeyChecking=no docker-compose.${{ inputs.docker_tag }}.yml $VM_USER@$VM_HOST:/home/$VM_USER/docker-compose.${{ inputs.docker_tag }}.yml
-          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "export DOCKER_TAG=${DOCKER_TAG} PORT=${PORT} && bash -s" <<'REMOTE_EOF'
+          ssh -o StrictHostKeyChecking=no $VM_USER@$VM_HOST "export DOCKER_TAG=${DOCKER_TAG} PORT=${PORT} VM_USER=${VM_USER} && bash -s" <<'REMOTE_EOF'
             # use a unique compose project name per tag to isolate networks/volumes/services
             PROJECT_NAME=udsp38_${DOCKER_TAG}
             docker stop udsp-38-app-${DOCKER_TAG} || true
             docker rm udsp-38-app-${DOCKER_TAG} || true
             docker rmi projetudsp38/udsp-38-app:${DOCKER_TAG} || true
             docker pull projetudsp38/udsp-38-app:${DOCKER_TAG}
-            docker-compose -p ${PROJECT_NAME} -f /home/$VM_USER/docker-compose.${DOCKER_TAG}.yml up -d
+            docker-compose -p ${PROJECT_NAME} -f /home/${VM_USER}/docker-compose.${DOCKER_TAG}.yml up -d
           REMOTE_EOF
