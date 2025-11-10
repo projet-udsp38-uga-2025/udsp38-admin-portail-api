@@ -20,6 +20,8 @@ on:
         required: true
       VM_USER:
         required: true
+      DATABASE_URL:
+        required: true
 
 jobs:
   build-and-test:
@@ -42,10 +44,19 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
-      - name: generate Prisma Client
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm prisma generate
 
+      - name: Run Database Migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm prisma migrate deploy
+
       - name: Build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm run build
 
       - name: Build Docker Image
