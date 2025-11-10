@@ -11,9 +11,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+}
+
+model Publication {
+  id                Int              @id @default(autoincrement())
+  date_creation     DateTime         @default(now())
+  date_modification DateTime?
+  date_publication  DateTime?
+  date_expiration   DateTime?
+  statut            String?          @db.VarChar(50)
+  titre             String           @db.VarChar(255)
+  description       String?
+  image_url         String?
+  id_categorie      Int?
+  categorie         Categorie?       @relation(fields: [id_categorie], references: [id], onDelete: Cascade)
+  actualite        Actualite?
+  evenement        Evenement?
+  tagsDePublications TagsDePublication[]
+}
+
+model Actualite {
+  id              Int         @id @default(autoincrement())
+  id_publication  Int         @unique
+  publication     Publication @relation(fields: [id_publication], references: [id], onDelete: Cascade)
+}
+
+model Categorie {
+  id           Int            @id @default(autoincrement())
+  nom          String?
+  description  String?
+  publications Publication[]
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  libelle String @unique @db.VarChar(100)
+  tagsDePublications TagsDePublication[]
+}
+
+model TagsDePublication {
+  id_tag         Int
+  id_publication Int
+  tag            Tag         @relation(fields: [id_tag], references: [id], onDelete: Cascade)
+  publication    Publication @relation(fields: [id_publication], references: [id], onDelete: Cascade)
+
+  @@id([id_tag, id_publication])
+}
+
+model Evenement {
+  id              Int         @id @default(autoincrement())
+  id_publication  Int         @unique
+  publication     Publication @relation(fields: [id_publication], references: [id], onDelete: Cascade)
+  adresse         String?     @db.VarChar(255)
+  date_planifiee  DateTime?
 }
