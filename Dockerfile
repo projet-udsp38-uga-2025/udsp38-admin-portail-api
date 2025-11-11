@@ -1,26 +1,42 @@
-# Use the official Node.js image as the base
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
+RUN corepack enable
 
-# Copy package.json and pnpm-lock.yaml to install dependencies
-COPY package.json pnpm-lock.yaml /app/
-
-# Install pnpm globally
-RUN npm install -g pnpm
-
-# Install dependencies
+COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
 COPY . .
 
-# Build the Next.js application
+# Génère Prisma client dans /app/src/infrastructure/database/prisma/core
+RUN pnpm prisma generate
+
+# Build Next.js
 RUN pnpm run build
 
-# Expose the port the app will run on
-EXPOSE 3000
+FROM node:20-alpine AS runner
 
-# Start the application
+WORKDIR /app
+ENV NODE_ENV=production
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml .npmrc ./
+
+# Autorise les scripts (Prisma, Sharp, etc.) en prod
+ENV PNPM_ALLOW_BUILD=true
+ENV HUSKY=0
+RUN pnpm install --frozen-lockfile --prod
+
+# Copie le build
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Copie le client Prisma généré dans le chemin custom
+COPY --from=builder /app/src/infrastructure/database/prisma/core ./src/infrastructure/database/prisma/core
+
+# Copie le schéma (utile pour migrations ou debug)
+COPY --from=builder /app/prisma ./prisma
+
+EXPOSE 3000
 CMD ["pnpm", "start"]
