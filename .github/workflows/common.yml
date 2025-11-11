@@ -60,7 +60,9 @@ jobs:
         run: pnpm run build
 
       - name: Build Docker Image
-        run: docker build -t projetudsp38/udsp-38-app:${{ inputs.docker_tag }} .
+        run: |
+          echo ${{ secrets.DATABASE_URL }} > .env
+          docker build -t projetudsp38/udsp-38-app:${{ inputs.docker_tag }} .
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -78,6 +80,7 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
           DOCKER_TAG: ${{ inputs.docker_tag }}
           PORT: ${{ inputs.port }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
@@ -90,5 +93,6 @@ jobs:
             docker rm udsp-38-app-${DOCKER_TAG} || true
             docker rmi projetudsp38/udsp-38-app:${DOCKER_TAG} || true
             docker pull projetudsp38/udsp-38-app:${DOCKER_TAG}
+            export DATABASE_URL=${{ secrets.DATABASE_URL }}
             docker-compose -p ${PROJECT_NAME} -f /home/${VM_USER}/docker-compose.${DOCKER_TAG}.yml up -d
           REMOTE_EOF
