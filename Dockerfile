@@ -8,6 +8,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 # Génère Prisma client dans /app/src/infrastructure/database/prisma/core
 RUN pnpm prisma generate
 
@@ -18,6 +21,9 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 ENV NODE_ENV=production
+
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 
 RUN corepack enable
 

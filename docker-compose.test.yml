@@ -7,4 +7,3 @@ services:
     restart: always
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL}
