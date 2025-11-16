@@ -1,7 +1,10 @@
-import { UserRepository } from '@/domain/repositories/UserRepository';
-import { container } from 'tsyringe';
-import { UserPrismaRepository } from '../database/prisma/repositories/UserPrismaRepository';
+import "reflect-metadata";
+import { container } from "tsyringe";
+import { TOKENS } from "./tokens";
 
-container.register<UserRepository>('IUserRepository', {
-  useClass: UserPrismaRepository,
+import type { CategorieRepository } from "@/domain/repositories/CategorieRepository";
+import { CategoriePrismaRepository } from "@/infrastructure/database/prisma/repositories/CategoriePrismaRepository";
+
+container.register<CategorieRepository>(TOKENS.ICategorieRepository, {
+  useClass: CategoriePrismaRepository,
 });
