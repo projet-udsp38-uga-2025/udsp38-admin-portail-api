@@ -1,20 +1,10 @@
-import "reflect-metadata";
-import "@/infrastructure/config/InjectionDependencies";
+export const dynamic = "force-dynamic";
 import ActualitesView from "@/ui/views/ActualitesView";
-import { container } from "tsyringe";
-import { ActualiteService } from "@/application/services/ActualiteService";
-import { revalidatePath } from "next/cache";
-
-async function archiverActualite(id: number) {
-  "use server";
-  const actualiteService = container.resolve(ActualiteService);
-  await actualiteService.archiver(id);
-  revalidatePath('/actualites');
-}
+import { listActualitesAction } from "@/ui/actions/ActualiteActions";
+import { archiverActualiteAction } from "@/ui/actions/ActualiteActions";
 
 export default async function ActualitesPage() {
-  const actualiteService = container.resolve(ActualiteService);
-  const actualites = await actualiteService.listActualites();
+  const actualites = await listActualitesAction();
   
-  return <ActualitesView actualites={actualites} archiverActualite={archiverActualite} />;
+  return <ActualitesView actualites={actualites} archiverActualite={archiverActualiteAction} />;
 }

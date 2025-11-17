@@ -9,6 +9,9 @@ on:
       port:
         required: true
         type: string
+      environnement:
+        required: true
+        type: string
     secrets:
       DOCKER_USERNAME:
         required: true
@@ -57,12 +60,19 @@ jobs:
       - name: Build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_UPLOAD_IMAGE_DIR: ${{secrets.NEXT_UPLOAD_IMAGE_DIR}}
+          NEXT_PUBLIC_UPLOAD_IMAGE_URL: ${{ inputs.environnement == 'prod' && secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_PROD || secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_TEST }}
         run: pnpm run build
 
       - name: Build Docker Image
+        env:
+          NEXT_UPLOAD_IMAGE_DIR: ${{secrets.NEXT_UPLOAD_IMAGE_DIR}}
+          NEXT_PUBLIC_UPLOAD_IMAGE_URL: ${{ inputs.environnement == 'prod' && secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_PROD || secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_TEST }}
         run: |
           docker build \
             --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            --build-arg NEXT_UPLOAD_IMAGE_DIR=${NEXT_UPLOAD_IMAGE_DIR} \
+            --build-arg NEXT_PUBLIC_UPLOAD_IMAGE_URL=${NEXT_PUBLIC_UPLOAD_IMAGE_URL} \
             -t projetudsp38/udsp-38-app:${{ inputs.docker_tag }} .
 
       - name: Log in to Docker Hub

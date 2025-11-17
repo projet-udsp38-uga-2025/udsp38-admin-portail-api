@@ -1,10 +1,11 @@
 import { injectable, inject } from 'tsyringe';
 import type { ActualiteRepository } from '../../repositories/ActualiteRepository';
+import { TOKENS } from '@/infrastructure/config/tokens';
 
 @injectable()
 export class ArchiverActualiteUseCase {
     constructor(
-        @inject('IActualiteRepository')
+        @inject(TOKENS.IActualiteRepository)
         private actualiteRepository: ActualiteRepository
     ) {}
 

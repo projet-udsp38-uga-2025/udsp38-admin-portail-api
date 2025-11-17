@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { inject, injectable } from "tsyringe";
 import type { CategorieRepository } from "@/domain/repositories/CategorieRepository";
 import { TOKENS } from "@/infrastructure/config/tokens";

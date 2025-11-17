@@ -12,4 +12,5 @@ jobs:
     with:
       docker_tag: 'latest'
       port: '3000'
+      environnement: 'prod'
     secrets: inherit

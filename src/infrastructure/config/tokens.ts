@@ -1,4 +1,5 @@
 export const TOKENS = {
   ICategorieRepository: Symbol.for('ICategorieRepository'),
-  // ajoute ici d’autres interfaces…
+  IActualiteRepository: Symbol.for('IActualiteRepository'),
+  ITagRepository: Symbol.for('ITagRepository'),
 };

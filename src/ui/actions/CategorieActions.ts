@@ -1,4 +1,4 @@
-"use server";
+'use server';
 import "reflect-metadata";
 import "@/infrastructure/config/InjectionDependencies";
 import { container } from "tsyringe";
@@ -29,4 +29,9 @@ export async function createCategorieAction(
 
   revalidatePath("/categories");
   return CategorieMapper.toCategorieDTO(created);
+}
+
+export async function listCategoriesAction(): Promise<CategorieDTO[]> {
+  const service = container.resolve(CategorieService);
+  return await service.getAllCategories();
 }

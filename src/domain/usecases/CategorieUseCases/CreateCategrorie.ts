@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { CategorieEntity } from "@/domain/entities/CategorieEntity";
 import type { CategorieRepository } from "@/domain/repositories/CategorieRepository";
 import { TOKENS } from "@/infrastructure/config/tokens";

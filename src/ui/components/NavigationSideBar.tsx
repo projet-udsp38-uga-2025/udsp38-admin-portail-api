@@ -6,9 +6,6 @@ import { BiCategory } from "react-icons/bi";
 import { BsCalendarEvent } from "react-icons/bs";
 import { FaRegNewspaper } from "react-icons/fa6";
 
-
-
-
 export default function NavigationSideBar() {
     const pathname = usePathname();
 
@@ -20,7 +17,9 @@ export default function NavigationSideBar() {
     return (
         <aside className="h-screen w-50 bg-white fixed inset-y-0 left-0 z-10 hidden border-r border-gray-200 md:block flex flex-col pt-6">
             <div className="w-full h-40 flex flex-col items-center justify-center mb-6">
-                <Image src="/logo-udsp38.jpg" alt="Logo udsp38" width={120} height={120} className="mb-4" />
+                <Link href="/">
+                    <Image src="/logo-udsp38.jpg" loading="eager" alt="Logo udsp38" width={120} height={120} className="mb-4 h-auto" />
+                </Link>
                 <div className="uppercase text-lg font-bold text-gray-900">
                     Portail Admin
                 </div>

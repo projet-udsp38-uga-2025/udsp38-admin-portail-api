@@ -1,5 +1,3 @@
-import "reflect-metadata";
-import "@/infrastructure/config/InjectionDependencies"
 import { container } from "tsyringe";
 import { FindAllCategories } from "@/domain/usecases/CategorieUseCases/FindAllCategories";
 import { CreateCategorie } from "@/domain/usecases/CategorieUseCases/CreateCategrorie";

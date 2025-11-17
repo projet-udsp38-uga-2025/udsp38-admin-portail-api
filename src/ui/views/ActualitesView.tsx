@@ -1,10 +1,12 @@
 'use client';
-
 import { useState } from "react";
 import { Button, Tabs, Tab, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Image } from "@heroui/react";
 import { ActualiteListDTO } from "@/application/dtos/ActualiteListDTO";
 import { StatutPublication } from "@/shared/enums/StatutPublication";
 import { useRouter } from "next/navigation";
+import { MdAddCircleOutline } from "react-icons/md";
+import Link from "next/link";
+import { formaterDate } from "@/shared/utils/formaterDate";
 
 interface ActualitesViewProps {
     actualites: ActualiteListDTO[];
@@ -20,15 +22,7 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
         ? actualites
         : actualites.filter(actualite => actualite.statut === selectedTab);
 
-    const formatDate = (dateString: string | null | undefined): string => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    };
+    const publicImagePath = process.env.NEXT_PUBLIC_UPLOAD_IMAGE_URL;
 
     const handleRowClick = (_actualiteId: number) => {
     };
@@ -49,9 +43,6 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
                 }
                 break;
         }
-    };
-
-    const handleCreateActualite = () => {
     };
 
     const getAvailableActions = (statut: StatutPublication) => {
@@ -108,11 +99,12 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
                     </Tabs>
                 </div>
                 
-                <Button 
+                <Button
+                    startContent={<MdAddCircleOutline size={20} />}
                     size="md"
-                    className="font-medium bg-[#2B53A0] hover:bg-[#1F3D7A] text-white px-6 py-2 h-10 rounded-md"
-                    onClick={handleCreateActualite}
-                >
+                    as={Link}
+                    className="font-medium bg-primary hover:bg-[#1F3D7A] text-white py-2 h-10 rounded-md"
+                    href="/actualites/edition">
                     Créer une actualité
                 </Button>
             </div>
@@ -132,7 +124,7 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
                         }}
                     >
                         <TableHeader>
-                            <TableColumn width={80}> </TableColumn>
+                            <TableColumn width={100}> </TableColumn>
                             <TableColumn>Titre</TableColumn>
                             <TableColumn width={130}>Créé le</TableColumn>
                             <TableColumn width={130}>Modifié le</TableColumn>
@@ -158,32 +150,29 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
                                         className={`border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
                                             isArchived ? 'border-l-4 border-l-orange-500' : ''
                                         }`}
-                                        onClick={() => handleRowClick(actualite.id)}
+                                        onClick={() => handleRowClick(actualite.id!)}
                                     >
                                         <TableCell>
-                                            {actualite.imageUrl ? (
-                                                <Image
-                                                    src={actualite.imageUrl}
-                                                    alt={actualite.titre}
-                                                    width={60}
-                                                    height={60}
-                                                    className="rounded-lg object-cover"
-                                                />
-                                            ) : (
-                                                <div className="w-[60px] h-[60px] bg-gray-100 rounded-lg"></div>
-                                            )}
+                                            <Image
+                                                src={actualite.imageUrl ? publicImagePath+actualite.imageUrl : "no-image.png"}
+                                                alt={actualite.titre!}
+                                                width={90}
+                                                height={60}
+                                                className="w-full h-auto object-cover rounded-lg"
+                                            />
+                                            
                                         </TableCell>
                                         <TableCell>
-                                            <div className="font-normal text-gray-900">{actualite.titre}</div>
+                                            <div className="font-semibold text-medium text-gray-900">{actualite.titre}</div>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-gray-600">{formatDate(actualite.dateCreation)}</span>
+                                            <span className="text-gray-600">{formaterDate(actualite.dateCreation)}</span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-gray-600">{formatDate(actualite.dateModification)}</span>
+                                            <span className="text-gray-600">{formaterDate(actualite.dateModification)}</span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-gray-600">{formatDate(actualite.datePublication)}</span>
+                                            <span className="text-gray-600">{formaterDate(actualite.datePublication)}</span>
                                         </TableCell>
                                         <TableCell>
                                             <Dropdown>
@@ -205,9 +194,9 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
                                                 </DropdownTrigger>
                                                 <DropdownMenu 
                                                     aria-label="Actions"
-                                                    onAction={(key) => handleAction(key as string, actualite.id)}
+                                                    onAction={(key) => handleAction(key as string, actualite.id!)}
                                                 >
-                                                    {getAvailableActions(actualite.statut).map((action) => (
+                                                    {getAvailableActions(actualite.statut!).map((action) => (
                                                         <DropdownItem key={action.key}>
                                                             {action.label}
                                                         </DropdownItem>

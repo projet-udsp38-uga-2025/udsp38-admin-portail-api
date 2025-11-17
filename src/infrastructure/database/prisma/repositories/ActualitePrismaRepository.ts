@@ -39,11 +39,11 @@ export class ActualitePrismaRepository implements ActualiteRepository {
 
     async update(id: number, actualite: ActualiteEntity): Promise<ActualiteEntity> {
         await prisma.publication.update({
-            where: { id: actualite.id },
+            where: { id: actualite.id! },
             data: {
                 statut: actualite.statut,
                 date_modification: actualite.dateModification,
-                titre: actualite.titre,
+                titre: actualite.titre!,
                 description: actualite.description,
                 image_url: actualite.imageUrl,
                 date_publication: actualite.datePublication,
@@ -79,5 +79,37 @@ export class ActualitePrismaRepository implements ActualiteRepository {
                 date_modification: new Date()
             }
         });
+    }
+
+    async create(actualite: ActualiteEntity): Promise<ActualiteEntity> {
+        const nouvelleActualite = await prisma.actualite.create({
+            data: {
+                publication: {
+                    create: {
+                        titre: actualite.titre!,
+                        description: actualite.description,
+                        statut: actualite.statut,
+                        date_creation: new Date(),
+                        date_modification: new Date(),
+                        image_url: actualite.imageUrl,
+                        date_publication: actualite.datePublication,
+                        date_expiration: actualite.dateExpiration,
+                        id_categorie: actualite.idCategorie,
+                        tagsDePublications: {
+                            create: actualite.tags?.map(tag => ({
+                                tag: {
+                                    connect: { id: tag.id! }
+                                }
+                            }))
+                        }
+                    }
+                },
+            },
+            include: {
+                publication: true
+            }
+        });
+
+        return ActualiteMapper.toEntity(nouvelleActualite);
     }
 }

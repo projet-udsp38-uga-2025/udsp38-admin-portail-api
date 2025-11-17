@@ -2,6 +2,15 @@
 
 Ceci est l'API backend pour le Portail Admin UDSP38, construite avec Next.js 15, TypeScript et Prisma ORM.
 
+## 🛠️ Stack Technique
+
+- Next.js 15 (App Router)
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Tailwind CSS
+- React 19
+
 ## 🚀 Pour Commencer
 
 ### Prérequis
@@ -74,13 +83,3 @@ npx prisma migrate dev
 
 La documentation de l'API est disponible sur :
 - Développement : `http://localhost:3000/api-docs`
-- Production : `https://your-domain.com/api-docs`
-
-## 🛠️ Stack Technique
-
-- Next.js 15 (App Router)
-- TypeScript
-- Prisma ORM
-- PostgreSQL
-- Tailwind CSS
-- React 19
