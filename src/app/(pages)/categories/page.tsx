@@ -1,9 +1,9 @@
-import { CategorieService } from "@/application/services/CategorieService";
+export const dynamic = "force-dynamic";
+import { listCategoriesAction } from "@/ui/actions/CategorieActions";
 import CategoriesView from "@/ui/views/CategoriesView";
 
 export default async function CategoriesPage() {
-  const service = new CategorieService();
-  const categories = await service.getAllCategories();
+  const categories = await listCategoriesAction();
 
   return <CategoriesView categories={categories} />;
 }

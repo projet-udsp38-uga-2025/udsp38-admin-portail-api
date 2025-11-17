@@ -1,44 +1,52 @@
 import { Optional } from "@/shared/types/Optional.type";
 import { StatutPublication } from "@/shared/enums/StatutPublication";
+import { TagEntity } from "./TagEntity";
 
 export class ActualiteEntity {
-    id: number;
-    dateCreation: Date;
+    id: Optional<number>;
+    dateCreation: Optional<Date>;
     dateModification: Optional<Date>;
     datePublication: Optional<Date>;
     dateExpiration: Optional<Date>;
-    statut: StatutPublication;
-    titre: string;
+    statut: Optional<StatutPublication>;
+    titre: Optional<string>;
     description: Optional<string>;
     imageUrl: Optional<string>;
     idCategorie: Optional<number>;
+    tags: Optional<TagEntity[]>;
 
-    constructor(
-        id: number,
-        dateCreation: Date,
-        titre: string,
-        statut: StatutPublication,
-        dateModification: Optional<Date> = null,
-        datePublication: Optional<Date> = null,
-        dateExpiration: Optional<Date> = null,
-        description: Optional<string> = null,
-        imageUrl: Optional<string> = null,
-        idCategorie: Optional<number> = null
+    constructor(props: {
+        id?: Optional<number>,
+        dateCreation?: Optional<Date>,
+        titre?: Optional<string>,
+        statut?: Optional<StatutPublication>,
+        dateModification?: Optional<Date>,
+        datePublication?: Optional<Date>,
+        dateExpiration?: Optional<Date>,
+        description?: Optional<string>,
+        imageUrl?: Optional<string>,
+        idCategorie?: Optional<number>
+    }
     ) {
-        this.id = id;
-        this.dateCreation = dateCreation;
-        this.titre = titre;
-        this.statut = statut;
-        this.dateModification = dateModification;
-        this.datePublication = datePublication;
-        this.dateExpiration = dateExpiration;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.idCategorie = idCategorie;
+        this.id = props.id;
+        this.dateCreation = props.dateCreation;
+        this.titre = props.titre;
+        this.statut = props.statut;
+        this.dateModification = props.dateModification;
+        this.datePublication = props.datePublication;
+        this.dateExpiration = props.dateExpiration;
+        this.description = props.description;
+        this.imageUrl = props.imageUrl;
+        this.idCategorie = props.idCategorie;
     }
 
     archiver(): void {
         this.statut = StatutPublication.ARCHIVE;
         this.dateModification = new Date();
     }
+
+    setTags(tags: TagEntity[]): void {
+        this.tags = tags;
+    }
+
 }

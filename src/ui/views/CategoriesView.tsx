@@ -17,12 +17,8 @@ import {
   Textarea,
 } from "@heroui/react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import {
-  createCategorieAction,
-  updateCategorieAction,
-  deleteCategorieAction,
-} from "@/app/(pages)/categories/actions";
 import { CategorieDTO } from "@/application/dtos/CategorieDTO";
+import { createCategorieAction, deleteCategorieAction, updateCategorieAction } from "@/ui/actions/CategorieActions";
 
 interface CategoriesViewProps {
   categories: CategorieDTO[];
@@ -31,14 +27,13 @@ interface CategoriesViewProps {
 export default function CategoriesView({ categories }: CategoriesViewProps) {
   const router = useRouter();
 
-  // ─────────── États pour les modals ───────────
+
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingCategorie, setEditingCategorie] =
     useState<CategorieDTO | null>(null);
   const [viewingCategorie, setViewingCategorie] =
     useState<CategorieDTO | null>(null);
 
-  // ─────────── Création ───────────
   const [createNom, setCreateNom] = useState("");
   const [createDescription, setCreateDescription] = useState("");
   const [isCreatePending, startCreateTransition] = useTransition();
@@ -56,7 +51,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
     });
   };
 
-  // ─────────── Édition ───────────
   const [editNom, setEditNom] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [isEditPending, startEditTransition] = useTransition();
@@ -75,7 +69,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
     });
   };
 
-  // ─────────── Suppression ───────────
   const [isPending, startTransition] = useTransition();
   const [categorieToDelete, setCategorieToDelete] =
     useState<CategorieDTO | null>(null);
@@ -101,11 +94,9 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
     });
   };
 
-  // ─────────── Rendu ───────────
   return (
     <div className="w-full">
-      <div className="bg-white rounded-xl p-6 shadow-sm border w-full">
-        {/* Header */}
+      <div className="bg-white rounded-xl p-6 shadow-sm w-full">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Catégories</h1>
@@ -114,45 +105,35 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
             </p>
           </div>
 
-          <Button
-            color="primary"
-            onPress={() => setIsCreateOpen(true)}
-            radius="md"
-          >
+          <Button color="primary" onPress={() => setIsCreateOpen(true)} radius="sm">
             Créer une catégorie
           </Button>
         </div>
 
-        {/* Tableau */}
-        <table className="w-full text-sm">
+        <table className="w-full">
           <thead>
             <tr className="text-left text-gray-500 border-b">
-              <th className="py-3">Nom</th>
-              <th className="py-3">Description</th>
-              <th className="py-3 text-right pr-6">Actions</th>
+              <th className="py-3 pl-4 uppercase">Nom</th>
+              <th className="py-3 uppercase">Description</th>
+              <th className="py-3 text-right pr-6 uppercase">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {categories.map((categorie) => (
-              <tr key={categorie.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 text-gray-900 font-medium">
+              <tr key={categorie.id} className="border-b border-gray-200 hover:bg-slate-50/25">
+                <td className="py-3 pl-4 text-base font-medium">
                   {categorie.nom ?? "-"}
                 </td>
-                <td className="py-3 text-gray-900 font-medium">
+                <td className="py-3 text-base font-medium">
                   {categorie.description ?? "-"}
                 </td>
 
-                <td className="py-3 text-right pr-6">
+                <td className="py-3 text-right pr-8">
                   <Dropdown placement="bottom-end">
                     <DropdownTrigger>
-                      <Button
-                        isIconOnly
-                        variant="light"
-                        radius="full"
-                        size="sm"
-                      >
-                        <HiOutlineDotsHorizontal className="text-gray-700" />
+                      <Button isIconOnly variant="light" radius="full" size="sm">
+                        <HiOutlineDotsHorizontal size={20} className="text-gray-700"/>
                       </Button>
                     </DropdownTrigger>
 
@@ -160,8 +141,7 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
                       <DropdownItem
                         key="details"
                         className="text-gray-700"
-                        onPress={() => setViewingCategorie(categorie)}
-                      >
+                        onPress={() => setViewingCategorie(categorie)}>
                         Afficher les détails
                       </DropdownItem>
 
@@ -202,7 +182,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
         </table>
       </div>
 
-      {/* ───────────── Modal CRÉATION ───────────── */}
       <Modal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
@@ -256,7 +235,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
         </ModalContent>
       </Modal>
 
-      {/* ───────────── Modal ÉDITION ───────────── */}
       <Modal
         isOpen={!!editingCategorie}
         onClose={() => setEditingCategorie(null)}
@@ -310,7 +288,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
         </ModalContent>
       </Modal>
 
-      {/* ───────────── Modal DÉTAILS ───────────── */}
       <Modal
         isOpen={!!viewingCategorie}
         onClose={() => setViewingCategorie(null)}
@@ -350,7 +327,6 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
         </ModalContent>
       </Modal>
 
-      {/* ───────────── Modal SUPPRESSION ───────────── */}
       <Modal
         isOpen={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}

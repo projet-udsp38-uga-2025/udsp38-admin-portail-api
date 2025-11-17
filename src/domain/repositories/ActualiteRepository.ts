@@ -5,4 +5,5 @@ export interface ActualiteRepository {
     findById(id: number): Promise<ActualiteEntity | null>;
     update(id: number, actualite: ActualiteEntity): Promise<ActualiteEntity>;
     archiver(id: number): Promise<void>;
+    create(actualite: ActualiteEntity): Promise<ActualiteEntity>;
 }
