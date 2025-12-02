@@ -14,7 +14,7 @@ const modules = {
         [{ list: "ordered" }, { list: "bullet" }],
         [{ indent: "-1" }, { indent: "+1" }],
         [{ align: [] }],
-        ["link", "image", "video"],
+        ["link"],
         ["clean"],
     ],
     clipboard: {
@@ -37,7 +37,6 @@ const formats = [
     "indent",
     "align",
     "link",
-    "image",
 ];
 
 export type EditeurTextQuillProps = {

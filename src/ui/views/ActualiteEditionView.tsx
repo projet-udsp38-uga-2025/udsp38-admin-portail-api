@@ -19,11 +19,20 @@ interface ActualiteEditionViewProps {
     categories: CategorieDTO[];
 }
 
+interface AutocompleteCategorie {
+    choisie: string;
+    aCreer: string;
+    value: string;
+}
+
 export default function ActualiteEditionView({ categories }: ActualiteEditionViewProps) {
     const [titre, setTitre] = useState("");
     const [contenu, setContenu] = useState("");
-    const [categorieChoisie, setCategorieChoisie] = useState<string>("");
-    const [nouvelleCategorie, setNouvelleCategorie] = useState<string>("");
+    const [categorieChoisie, setCategorieChoisie] = useState<AutocompleteCategorie>({
+        choisie: "",
+        aCreer: "",
+        value: ""
+    });
     const [tagsChoisis, setTagsChoisis] = useState<TagCreatableOption[]>([]);
     const [image, setImage] = useState<File>();
     const { showNotification } = useNotification();
@@ -69,7 +78,7 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
         const dataCreation: CreerActualite = {
             titre,
             description: contenu,
-            categorie: nouvelleCategorie || Number(categorieChoisie) || undefined,
+            categorie: categorieChoisie.aCreer || Number(categorieChoisie.choisie) || undefined,
             tags: tagsChoisis,
             imageUrl,
         };
@@ -95,6 +104,31 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
 
     const categorieExiste = (value: string) =>
         categories.some((categorie) => categorie.nom.toLowerCase() === value.toLowerCase());
+
+    const onCategorieSelect = (key: React.Key | null) => {
+        const categorie = categories.find((categorie) => categorie.id === Number(key));
+        setCategorieChoisie({
+            choisie: String(key),
+            aCreer: "",
+            value: categorie?.nom || ""
+        });
+    }
+
+    const onCategorieInputChange = (value: string) => {
+        setCategorieChoisie({
+            choisie: "",
+            aCreer: value,
+            value: value
+        });
+    }
+
+    const onClear = () => {
+        setCategorieChoisie({
+            choisie: "",
+            aCreer: "",
+            value: ""
+        });
+    }
 
     return (
         <div className="flex flex-col actualite-edition-view">
@@ -139,19 +173,20 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
                         <div className="mt-6">
                             <Autocomplete
                                 className="w-full"
-                                allowsCustomValue
+                                allowsCustomValue={true}
                                 label={<label className="text-gray-900 text-lg font-medium">Catégorie</label>}
                                 labelPlacement="outside"
                                 placeholder="Choisir une catégorie"
-                                description={(nouvelleCategorie && !categorieExiste(nouvelleCategorie)) ? `Nouvelle catégorie à créer : "${nouvelleCategorie}"` : null}
+                                description={(categorieChoisie.aCreer && !categorieExiste(categorieChoisie.aCreer)) ? `Nouvelle catégorie à créer : "${categorieChoisie.aCreer}"` : null}
                                 size="lg"
                                 variant="bordered"
                                 radius="sm"
-                                defaultItems={categories}
-                                inputValue={nouvelleCategorie}
-                                onInputChange={setNouvelleCategorie}
-                                selectedKey={categorieChoisie}
-                                onSelectionChange={(key) => setCategorieChoisie(key == null ? "" : String(key))}>
+                                items={categories}
+                                inputValue={categorieChoisie.value}
+                                onInputChange={onCategorieInputChange}
+                                selectedKey={categorieChoisie.choisie}
+                                onSelectionChange={onCategorieSelect}
+                                onClear={onClear}>
                                 {(categorie) => (
                                     <AutocompleteItem key={categorie.id}>{categorie.nom}</AutocompleteItem>
                                 )}
