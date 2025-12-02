@@ -43,7 +43,7 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 # Autorise les scripts (Prisma, Sharp, etc.) en prod
 ENV PNPM_ALLOW_BUILD=true
 ENV HUSKY=0
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # Copie le build
 COPY --from=builder /app/.next ./.next
