@@ -110,12 +110,12 @@ export default function CategoriesView({ categories }: CategoriesViewProps) {
           </Button>
         </div>
 
-        <table className="w-full">
+        <table className="w-full text-black">
           <thead>
             <tr className="text-left text-gray-500 border-b">
-              <th className="py-3 pl-4 uppercase">Nom</th>
-              <th className="py-3 uppercase">Description</th>
-              <th className="py-3 text-right pr-6 uppercase">Actions</th>
+              <th className="py-3 pl-4 uppercase text-black">Nom</th>
+              <th className="py-3 uppercase text-black">Description</th>
+              <th className="py-3 text-right pr-6 uppercase text-black">Actions</th>
             </tr>
           </thead>
 
