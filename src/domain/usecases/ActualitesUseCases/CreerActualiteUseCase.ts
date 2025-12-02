@@ -17,7 +17,7 @@ export class CreerActualiteUseCase {
     ) {}
 
     async execute(data: CreerActualite): Promise<ActualiteEntity> {
-        const {tags, categorie, ...actualiteData} = data;
+        const {tags, categorie,  modePublication, datePublicationSouhaitee, ...actualiteData} = data;
         const tagsExistants = tags?.filter(tag => tag.value !== "new").map(tag => new TagEntity({id: Number(tag.value), libelle: tag.label})) || [];
         const tagACreer = tags?.filter(tag => tag.value === "new").map(tag => new TagEntity({libelle: tag.label })) || [];
 
@@ -31,9 +31,39 @@ export class CreerActualiteUseCase {
             }
     
             const tagsCrees = await this.tagRepository.createMany(tagACreer);
+
+            let statut: StatutPublication;
+            let datePublication: Date | undefined = undefined;
+            
+            switch(modePublication) {
+                case "IMMEDIATE":
+                    statut = StatutPublication.PUBLIE;
+                    datePublication = new Date();
+                    break;
+                
+                case "PROGRAMMEE":
+                    statut = StatutPublication.PROGRAMME; 
+                    datePublication = datePublicationSouhaitee
+                    ? new Date(datePublicationSouhaitee)
+                    : undefined;
+                    break;
+                
+                case "BROUILLON":
+                default:
+                    statut = StatutPublication.BROUILLON;
+                    datePublication = undefined;
+                    break;
+            }
     
-            const actualiteACreer = new ActualiteEntity({...actualiteData, idCategorie, statut: StatutPublication.BROUILLON});
+            const actualiteACreer = new ActualiteEntity({
+                ...actualiteData,
+                idCategorie,
+                statut, 
+                datePublication
+            });
+
             actualiteACreer.setTags([...tagsExistants, ...tagsCrees]);
+
             return await this.actualiteRepository.create(actualiteACreer);
         } catch {
             throw new Error();

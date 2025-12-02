@@ -6,4 +6,7 @@ export type CreerActualite = {
     imageUrl?: string;
     categorie?: number | string;
     tags?: TagCreatableOption[];
+
+    modePublication?: "BROUILLON" | "IMMEDIATE" | "PROGRAMMEE";
+    datePublicationSouhaitee?: string; 
 };

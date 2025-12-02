@@ -11,7 +11,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
   --primary: #2B53A0;
   --secondary: #5586C5;
   --success: #22c55e;
@@ -75,6 +75,17 @@ body {
   max-height: 12rem;
   padding: 0.75rem;
 }
+
+.ql-custom .ql-editor {
+  color: #000 !important;          
+}
+
+/* Placeholder "Commencer ici ..." */
+.ql-custom .ql-editor::before {
+  color: #9ca3af !important;       
+  font-style: italic;
+}
+
 
 .ql-editor.ql-blank::before {
   color: #9ca3af;
