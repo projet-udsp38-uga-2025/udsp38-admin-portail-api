@@ -4,7 +4,7 @@ import EditeurTextQuill from "../components/EditeurTextQuill";
 import InputFileUpload from "../components/InputFileUpload";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CategorieDTO } from "@/application/dtos/CategorieDTO";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import { CreerActualite } from "@/shared/types/CreerActualite.type";
@@ -14,20 +14,45 @@ import { NotificationType } from "@/shared/enums/NotificationType";
 import { useNotification } from "@/shared/hooks/notification";
 import { creerActualiteAction, enregistrerImage } from "../actions/ActualiteActions";
 import { rechercherTagsAction } from "../actions/TagActions";
+import { ActualiteDTO } from "@/application/dtos/ActualiteDTO";
 
 interface ActualiteEditionViewProps {
     categories: CategorieDTO[];
+    actualite?: ActualiteDTO;
 }
 
-export default function ActualiteEditionView({ categories }: ActualiteEditionViewProps) {
-    const [titre, setTitre] = useState("");
-    const [contenu, setContenu] = useState("");
-    const [categorieChoisie, setCategorieChoisie] = useState<string>("");
+export default function ActualiteEditionView({ categories, actualite }: ActualiteEditionViewProps) {
+    const isEditMode = !!actualite;
+    
+    // Compute initial values with correct dependencies for React Compiler
+    const initialTitre = useMemo(() => actualite?.titre || "", [actualite?.titre]);
+    const initialContenu = useMemo(() => actualite?.description || "", [actualite?.description]);
+    const initialCategorieChoisie = useMemo(
+        () => actualite?.idCategorie ? String(actualite.idCategorie) : "",
+        [actualite?.idCategorie]
+    );
+    const initialTagsChoisis = useMemo<TagCreatableOption[]>(
+        () => actualite?.tags?.map(tag => ({
+            value: String(tag.value),
+            label: tag.label
+        })) || [],
+        [actualite?.tags]
+    );
+    const initialImageUrl = useMemo(
+        () => actualite?.imageUrl || undefined,
+        [actualite?.imageUrl]
+    );
+    
+    // Initialize state with computed values
+    const [titre, setTitre] = useState(initialTitre);
+    const [contenu, setContenu] = useState(initialContenu);
+    const [categorieChoisie, setCategorieChoisie] = useState<string>(initialCategorieChoisie);
     const [nouvelleCategorie, setNouvelleCategorie] = useState<string>("");
-    const [tagsChoisis, setTagsChoisis] = useState<TagCreatableOption[]>([]);
+    const [tagsChoisis, setTagsChoisis] = useState<TagCreatableOption[]>(initialTagsChoisis);
     const [image, setImage] = useState<File>();
+    const [imageUrl] = useState<string | undefined>(initialImageUrl);
+    
     const { showNotification } = useNotification();
-
     const router = useRouter();
 
     const handleChange = (newValue: readonly TagCreatableOption[]) => {
@@ -52,7 +77,7 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
     };
 
     const handleCreateActualite = async () => {
-        let imageUrl;
+        let uploadedImageUrl = imageUrl;
 
         if (!titre) {
             showNotification("Le titre est requis", NotificationType.ERROR);
@@ -60,8 +85,8 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
         }
 
         if (image) {
-            imageUrl = await uploadImage(image);
-            if (!imageUrl) {
+            uploadedImageUrl = await uploadImage(image);
+            if (!uploadedImageUrl) {
                 return;
             }
         }
@@ -71,7 +96,7 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
             description: contenu,
             categorie: nouvelleCategorie || Number(categorieChoisie) || undefined,
             tags: tagsChoisis,
-            imageUrl,
+            imageUrl: uploadedImageUrl,
         };
 
         try {
@@ -111,7 +136,9 @@ export default function ActualiteEditionView({ categories }: ActualiteEditionVie
             </div>
             <div className="flex-1 flex flex-row justify-between">
                 <div className="rounded-lg shadow bg-white w-4/6 pt-6 pb-4 px-6">
-                    <h2 className="text-2xl font-bold mb-4 text-gray-700">Créer une actualité</h2>
+                    <h2 className="text-2xl font-bold mb-4 text-gray-700">
+                        {isEditMode ? 'Modifier l\'actualité' : 'Créer une actualité'}
+                    </h2>
                     <div className="flex flex-col gap-4 mt-6">
                         <Input
                             label={<span className="text-gray-900 text-xl font-medium">Titre</span>}

@@ -1,15 +1,19 @@
-import { StatutPublication } from "@/shared/enums/StatutPublication"
-import { Optional } from "@/shared/types/Optional.type"
+import { Optional } from "@/shared/types/Optional.type";
+import { StatutPublication } from "@/shared/enums/StatutPublication";
+import { CategorieDTO } from "./CategorieDTO";
+import { TagDTO } from "./TagDTO";
 
-export type ActualiteDTO = {
-    id?: Optional<number>,
-    dateCreation?: Optional<Date>,
-    titre?: Optional<string>,
-    statut?: Optional<StatutPublication>,
-    dateModification?: Optional<Date>,
-    datePublication?: Optional<Date>,
-    dateExpiration?: Optional<Date>,
-    description?: Optional<string>,
-    imageUrl?: Optional<string>,
-    idCategorie?: Optional<number>
+export interface ActualiteDTO {
+    id: Optional<number>;
+    dateCreation: Optional<Date>;
+    dateModification: Optional<Date>;
+    datePublication: Optional<Date>;
+    dateExpiration: Optional<Date>;
+    statut: Optional<StatutPublication>;
+    titre: Optional<string>;
+    description: Optional<string>;
+    imageUrl: Optional<string>;
+    idCategorie: Optional<number>;
+    categorie?: CategorieDTO;
+    tags?: TagDTO[];
 }
