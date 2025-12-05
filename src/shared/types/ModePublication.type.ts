@@ -1,0 +1,1 @@
+export type ModePublication = "BROUILLON" | "IMMEDIATE" | "PROGRAMMEE";

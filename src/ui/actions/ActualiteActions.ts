@@ -37,8 +37,7 @@ export async function enregistrerImage(file: File): Promise<string> {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     const date = new Date().toISOString().split("T")[0];
-    const nomSansEspace = file.name.replace(/\s+/g, "");
-    const filename = `${date}_${randomUUID()}_${nomSansEspace}`;
+    const filename = `${date}_${randomUUID()}`;
     const filePath = join(`${process.env.NEXT_UPLOAD_IMAGE_DIR}`, filename);
 
     await writeFile(filePath, buffer);
