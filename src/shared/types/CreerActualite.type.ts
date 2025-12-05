@@ -1,11 +1,11 @@
-import { TagCreatableOption } from "./TagCreatableOption.type";
+import { CreatableOption } from "./CreatableOption.type";
 
 export type CreerActualite = {
     titre: string;
     description?: string;
     imageUrl?: string;
     categorie?: number | string;
-    tags?: TagCreatableOption[];
+    tags?: CreatableOption[];
 
     modePublication?: "BROUILLON" | "IMMEDIATE" | "PROGRAMMEE";
     datePublicationSouhaitee?: string; 

@@ -6,13 +6,13 @@ interface DisplayMainImageProps {
 }
 
 export default function DisplayMainImage({ file }: DisplayMainImageProps) {
-
     const previewUrl = URL.createObjectURL(file);
-
     useEffect(() => {
         return () => {
-            URL.revokeObjectURL(previewUrl);
-        };
+            if (!file) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        }; 
     }, [file]);
     return (
         <Popover placement="left">
