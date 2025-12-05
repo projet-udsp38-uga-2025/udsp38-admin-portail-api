@@ -10,7 +10,15 @@ export class ActualitePrismaRepository implements ActualiteRepository {
     async findAllActualites(): Promise<ActualiteEntity[]> {
         const actualites = await prisma.actualite.findMany({
             include: {
-                publication: true
+                publication: {
+                    include: {
+                        tagsDePublications: {
+                            include: {
+                                tag: true
+                            }
+                        }
+                    }
+                }
             },
             orderBy: {
                 publication: {
@@ -26,7 +34,15 @@ export class ActualitePrismaRepository implements ActualiteRepository {
         const actualite = await prisma.actualite.findUnique({
             where: { id },
             include: {
-                publication: true
+                publication: {
+                    include: {
+                        tagsDePublications: {
+                            include: {
+                                tag: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -55,7 +71,15 @@ export class ActualitePrismaRepository implements ActualiteRepository {
         const updatedActualite = await prisma.actualite.findUnique({
             where: { id },
             include: {
-                publication: true
+                publication: {
+                    include: {
+                        tagsDePublications: {
+                            include: {
+                                tag: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -106,7 +130,15 @@ export class ActualitePrismaRepository implements ActualiteRepository {
                 },
             },
             include: {
-                publication: true
+                publication: {
+                    include: {
+                        tagsDePublications: {
+                            include: {
+                                tag: true
+                            }
+                        }
+                    }
+                }
             }
         });
 

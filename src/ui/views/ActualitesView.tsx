@@ -30,9 +30,14 @@ interface ActualitesViewProps {
 }
 
 export default function ActualitesView({ actualites, archiverActualite }: ActualitesViewProps) {
-  const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState<StatutPublication>(StatutPublication.TOUT);
-  const [isArchiving, setIsArchiving] = useState(false);
+    const router = useRouter();
+
+    const handleRowClick = (actualiteId: number) => {
+        router.push(`/actualites/edition/${actualiteId}`);
+    };
+
+    const [selectedTab, setSelectedTab] = useState<StatutPublication>(StatutPublication.TOUT);
+    const [isArchiving, setIsArchiving] = useState(false);
 
   const filteredActualites = actualites.filter((actualite) => {
     switch (selectedTab) {
@@ -56,10 +61,7 @@ export default function ActualitesView({ actualites, archiverActualite }: Actual
     }
   });
 
-  const publicImagePath = process.env.NEXT_PUBLIC_UPLOAD_IMAGE_URL;
-
-  const handleRowClick = (_actualiteId: number) => {
-  };
+    const publicImagePath = process.env.NEXT_PUBLIC_UPLOAD_IMAGE_URL;
 
   const handleAction = async (action: string, actualiteId: number) => {
     switch (action) {

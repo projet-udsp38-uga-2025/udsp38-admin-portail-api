@@ -2,6 +2,7 @@ import { container } from "tsyringe";
 import { ArchiverActualiteUseCase } from '@/domain/usecases/ActualitesUseCases/ArchiverActualiteUseCase';
 import { ListAllActualitesUseCase } from '@/domain/usecases/ActualitesUseCases/ListAllActualitesUseCase';
 import { ActualiteMapper } from '../mappers/ActualiteMapper';
+import { FindActualiteUseCaseById } from '@/domain/usecases/ActualitesUseCases/FindActualiteUseCaseById';
 import { injectable } from 'tsyringe';
 import { CreerActualite } from '@/shared/types/CreerActualite.type';
 import { CreerActualiteUseCase } from '@/domain/usecases/ActualitesUseCases/CreerActualiteUseCase';
@@ -18,6 +19,17 @@ export class ActualiteService {
     async archiver(id: number): Promise<void> {
         const archiverActualiteUseCase = container.resolve(ArchiverActualiteUseCase);
         await archiverActualiteUseCase.execute(id);
+    }
+
+    async findById(id: number): Promise<ActualiteDTO | null> {
+        const findActualiteByIdUseCaseById = container.resolve(FindActualiteUseCaseById);
+        const actualite = await findActualiteByIdUseCaseById.execute(id);
+        
+        if (!actualite) {
+            return null;
+        }
+        
+        return ActualiteMapper.toActualiteDTO(actualite);
     }
 
     async creerActualite(data: CreerActualite): Promise<ActualiteDTO> {

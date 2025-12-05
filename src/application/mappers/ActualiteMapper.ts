@@ -1,54 +1,66 @@
 import { ActualiteEntity } from "@/domain/entities/ActualiteEntity";
-import { ActualiteListDTO } from "../dtos/ActualiteListDTO";
-import { StatutPublication } from "@/shared/enums/StatutPublication";
-import { Prisma } from "@/infrastructure/database/prisma/core/client";
 import { ActualiteDTO } from "../dtos/ActualiteDTO";
+import { ActualiteListDTO } from "../dtos/ActualiteListDTO";
+import { TagMapper } from "./TagMapper";
+import { StatutPublication } from "@/shared/enums/StatutPublication";
+import { TagEntity } from "@/domain/entities/TagEntity";
+import { ActualiteComplete } from "@/shared/types/ActualiteComplete.type";
 
-type ActualiteWithPublication = Prisma.ActualiteGetPayload<{
-    include: { publication: true }
-}>;
 
 export class ActualiteMapper {
-    static toEntity(actualite: ActualiteWithPublication): ActualiteEntity {
-        return new ActualiteEntity({
-            id: actualite.id,
-            dateCreation: actualite.publication.date_creation,
-            titre: actualite.publication.titre,
-            statut: actualite.publication.statut as StatutPublication,
-            dateModification: actualite.publication.date_modification,
-            datePublication: actualite.publication.date_publication,
-            dateExpiration: actualite.publication.date_expiration,
-            description: actualite.publication.description,
-            imageUrl: actualite.publication.image_url,
-            idCategorie: actualite.publication.id_categorie,
+
+    static toActualiteDTO(entity: ActualiteEntity): ActualiteDTO {
+        return {
+            id: entity.id,
+            dateCreation: entity.dateCreation,
+            dateModification: entity.dateModification,
+            datePublication: entity.datePublication,
+            dateExpiration: entity.dateExpiration,
+            statut: entity.statut,
+            titre: entity.titre,
+            description: entity.description,
+            imageUrl: entity.imageUrl,
+            idCategorie: entity.idCategorie,
+            tags: entity.tags?.map(tag => TagMapper.toDTO(tag)!)
+        };
+    }
+
+    static toActualiteListDTO(entity: ActualiteEntity): ActualiteListDTO {
+        return {
+            id: entity.id,
+            titre: entity.titre,
+            imageUrl: entity.imageUrl,
+            dateCreation: entity.dateCreation?.toISOString() || null,
+            dateModification: entity.dateModification?.toISOString() || null,
+            datePublication: entity.datePublication?.toISOString() || null,
+            statut: entity.statut,
+        };
+    }
+
+    static toEntity(prismaActualite: ActualiteComplete): ActualiteEntity {
+        const entity = new ActualiteEntity({
+            id: prismaActualite.id,
+            dateCreation: prismaActualite.publication.date_creation,
+            dateModification: prismaActualite.publication.date_modification,
+            datePublication: prismaActualite.publication.date_publication,
+            dateExpiration: prismaActualite.publication.date_expiration,
+            statut: prismaActualite.publication.statut as StatutPublication,
+            titre: prismaActualite.publication.titre,
+            description: prismaActualite.publication.description,
+            imageUrl: prismaActualite.publication.image_url,
+            idCategorie: prismaActualite.publication.id_categorie,
         });
-    }
 
+        if (prismaActualite.publication.tagsDePublications) {
+            const tags = prismaActualite.publication.tagsDePublications.map((tagPub: { tag: { id: number; libelle: string; }; }) =>
+                new TagEntity({
+                    id: tagPub.tag.id,
+                    libelle: tagPub.tag.libelle
+                })
+            );
+            entity.setTags(tags);
+        }
 
-    static toActualiteListDTO(actualite: ActualiteEntity): ActualiteListDTO {
-        return {
-            id: actualite.id,
-            titre: actualite.titre,
-            imageUrl: actualite.imageUrl,
-            dateCreation: actualite.dateCreation?.toISOString() || null,
-            dateModification: actualite.dateModification?.toISOString() || null,
-            datePublication: actualite.datePublication?.toISOString() || null,
-            statut: actualite.statut,
-        };
-    }
-
-    static toActualiteDTO(actualite: ActualiteEntity): ActualiteDTO {
-        return {
-            id: actualite.id,
-            titre: actualite.titre,
-            description: actualite.description,
-            imageUrl: actualite.imageUrl,
-            dateCreation: actualite.dateCreation,
-            dateModification: actualite.dateModification,
-            datePublication: actualite.datePublication,
-            dateExpiration: actualite.dateExpiration,
-            statut: actualite.statut,
-            idCategorie: actualite.idCategorie,
-        };
+        return entity;
     }
 }

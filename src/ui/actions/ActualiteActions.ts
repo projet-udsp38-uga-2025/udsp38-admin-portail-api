@@ -47,3 +47,21 @@ export async function enregistrerImage(file: File): Promise<string> {
     throw new Error();
   }
 }
+
+export async function getActualiteByIdAction(id: number) {
+  try {
+    const actualiteService = container.resolve(ActualiteService);
+    const actualite = await actualiteService.findById(id);
+    
+    if (!actualite) {
+      return { success: false, error: 'Actualité non trouvée' };
+    }
+    
+    return { success: true, data: actualite };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: 'Erreur lors du chargement de l\'actualité: ' + error
+    };
+  }
+}

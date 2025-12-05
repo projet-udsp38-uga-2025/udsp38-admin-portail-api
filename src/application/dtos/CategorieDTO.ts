@@ -1,7 +1,7 @@
 import { Optional } from "@/shared/types/Optional.type";
 
-export type CategorieDTO = {
-  id: number;
-  nom: string;
-  description: Optional<string>;
-};
+export interface CategorieDTO {
+    id: number;
+    nom: string;
+    description: Optional<string>;
+}

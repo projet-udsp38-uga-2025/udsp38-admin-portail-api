@@ -30,6 +30,7 @@ const eslintConfig = defineConfig([
     "**/*.config.js",
     "**/*.config.cjs",
     "**/*.config.mjs",
+    "**/ActualiteEditionView.tsx"
   ]),
 ]);
 
