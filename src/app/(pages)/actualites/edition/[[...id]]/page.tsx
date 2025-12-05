@@ -13,19 +13,15 @@ export default async function ActualiteEdition({ params }: PageProps) {
   const { id } = await params;
   const actualiteId = id?.[0] ? Number(id[0]) : null;
 
-  // If ID is provided but invalid, show 404
   if (id?.[0] && isNaN(actualiteId!)) {
     notFound();
   }
 
   const categories = await listCategoriesAction();
 
-  // If no ID, render creation mode
   if (!actualiteId) {
     return <ActualiteEditionView categories={categories} />;
   }
-
-  // If ID provided, fetch actualité and render edit mode
   const actualiteResult = await getActualiteByIdAction(actualiteId);
 
   if (!actualiteResult.success || !actualiteResult.data) {

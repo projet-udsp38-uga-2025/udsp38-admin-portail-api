@@ -4,6 +4,8 @@ import { ActualiteListDTO } from "../dtos/ActualiteListDTO";
 import { TagMapper } from "./TagMapper";
 import { StatutPublication } from "@/shared/enums/StatutPublication";
 import { TagEntity } from "@/domain/entities/TagEntity";
+import { ActualiteComplete } from "@/shared/types/ActualiteComplete.type";
+
 
 export class ActualiteMapper {
 
@@ -35,9 +37,7 @@ export class ActualiteMapper {
         };
     }
 
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    static toEntity(prismaActualite: any): ActualiteEntity {
+    static toEntity(prismaActualite: ActualiteComplete): ActualiteEntity {
         const entity = new ActualiteEntity({
             id: prismaActualite.id,
             dateCreation: prismaActualite.publication.date_creation,
