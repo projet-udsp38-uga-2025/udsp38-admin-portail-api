@@ -13,4 +13,5 @@ jobs:
       docker_tag: 'latest'
       port: '3000'
       environnement: 'prod'
+      database_url_secret: 'DATABASE_PROD_URL'
     secrets: inherit

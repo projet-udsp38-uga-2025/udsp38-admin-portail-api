@@ -12,6 +12,9 @@ on:
       environnement:
         required: true
         type: string
+      database_url_secret:
+        required: true
+        type: string
     secrets:
       DOCKER_USERNAME:
         required: true
@@ -22,8 +25,6 @@ on:
       VM_HOST:
         required: true
       VM_USER:
-        required: true
-      DATABASE_URL:
         required: true
 
 jobs:
@@ -49,17 +50,17 @@ jobs:
 
       - name: Generate Prisma Client
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets[inputs.database_url_secret] }}
         run: pnpm prisma generate
 
       - name: Run Database Migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets[inputs.database_url_secret] }}
         run: pnpm prisma migrate deploy
 
       - name: Build
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets[inputs.database_url_secret] }}
           NEXT_UPLOAD_IMAGE_DIR: ${{secrets.NEXT_UPLOAD_IMAGE_DIR}}
           NEXT_PUBLIC_UPLOAD_IMAGE_URL: ${{ inputs.environnement == 'prod' && secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_PROD || secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_TEST }}
         run: pnpm run build
@@ -70,7 +71,7 @@ jobs:
           NEXT_PUBLIC_UPLOAD_IMAGE_URL: ${{ inputs.environnement == 'prod' && secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_PROD || secrets.NEXT_PUBLIC_UPLOAD_IMAGE_URL_TEST }}
         run: |
           docker build \
-            --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            --build-arg DATABASE_URL=${{ secrets[inputs.database_url_secret] }} \
             --build-arg NEXT_UPLOAD_IMAGE_DIR=${NEXT_UPLOAD_IMAGE_DIR} \
             --build-arg NEXT_PUBLIC_UPLOAD_IMAGE_URL=${NEXT_PUBLIC_UPLOAD_IMAGE_URL} \
             -t projetudsp38/udsp-38-app:${{ inputs.docker_tag }} .
